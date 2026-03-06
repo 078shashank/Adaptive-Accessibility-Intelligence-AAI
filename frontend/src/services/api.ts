@@ -67,6 +67,23 @@ export const textService = {
   },
 };
 
+export const avatarService = {
+  generateSignAnimation: async (text: string) => {
+    const response = await api.post('/avatar/sign', { text });
+    return response.data;
+  },
+
+  getLanguages: async () => {
+    const response = await api.get('/avatar/languages');
+    return response.data;
+  },
+
+  segmentText: async (text: string) => {
+    const response = await api.post('/avatar/segment', { text });
+    return response.data;
+  },
+};
+
 export const healthService = {
   check: async () => {
     const response = await api.get('/health');

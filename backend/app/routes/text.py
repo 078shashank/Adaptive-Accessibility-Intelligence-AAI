@@ -1,12 +1,13 @@
 """Text Simplification Routes"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.database import get_db
 from app.models import User, TextSimplification
 from app.schemas import TextSimplifyRequest, TextSimplifyResponse
 from app.services.text_adapter import simplify_text as npl_simplify_text
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user_optional
 
 router = APIRouter(prefix="/text", tags=["text"])
 
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/text", tags=["text"])
 @router.post("/simplify", response_model=TextSimplifyResponse)
 async def simplify_text(
     request: TextSimplifyRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
     """
@@ -53,15 +54,23 @@ async def simplify_text(
             detail=f"Error simplifying text: {str(e)}"
         )
     
-    # Save to database for caching
-    cache_entry = TextSimplification(
-        user_id=current_user.id,
-        original_text=request.text,
-        simplified_text=simplified,
-        reading_level=request.reading_level
-    )
-    db.add(cache_entry)
-    db.commit()
+    # Save to database for caching (only if user is authenticated)
+    if current_user:
+        try:
+            cache_entry = TextSimplification(
+                user_id=current_user.id,
+                original_text=request.text,
+                simplified_text=simplified,
+                reading_level=request.reading_level
+            )
+            db.add(cache_entry)
+            db.commit()
+        except Exception as db_error:
+            # Log but don't fail if caching fails
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.warning(f"Failed to cache simplification: {db_error}")
+            db.rollback()
     
     return {
         "original_text": request.text,

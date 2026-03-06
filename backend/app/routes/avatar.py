@@ -1,12 +1,13 @@
 """Avatar Routes - Sign Language Translation"""
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+from typing import Optional
 
 from app.database import get_db
 from app.models import User
 from app.schemas import TextSimplifyRequest
 from app.services.avatar import SignLanguageAvatarService
-from app.dependencies import get_current_user
+from app.dependencies import get_current_user_optional
 
 router = APIRouter(prefix="/avatar", tags=["avatar"])
 
@@ -14,7 +15,7 @@ router = APIRouter(prefix="/avatar", tags=["avatar"])
 @router.post("/sign")
 async def generate_sign_language(
     request: TextSimplifyRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
     """
@@ -22,7 +23,7 @@ async def generate_sign_language(
     
     Args:
         request: Text to convert to sign language
-        current_user: Authenticated user
+        current_user: Optional authenticated user
         db: Database session
         
     Returns:
@@ -57,12 +58,12 @@ async def generate_sign_language(
 
 
 @router.get("/languages")
-async def get_sign_languages(current_user: User = Depends(get_current_user)):
+async def get_sign_languages(current_user: Optional[User] = Depends(get_current_user_optional)):
     """
     Get available sign language variants
     
     Args:
-        current_user: Authenticated user
+        current_user: Optional authenticated user
         
     Returns:
         Dictionary of available sign languages
@@ -76,7 +77,7 @@ async def get_sign_languages(current_user: User = Depends(get_current_user)):
 @router.post("/segment")
 async def segment_for_avatar(
     request: TextSimplifyRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user_optional),
     db: Session = Depends(get_db)
 ):
     """
@@ -84,7 +85,7 @@ async def segment_for_avatar(
     
     Args:
         request: Text to segment
-        current_user: Authenticated user
+        current_user: Optional authenticated user
         db: Database session
         
     Returns:

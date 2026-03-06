@@ -1,0 +1,34 @@
+[run]
+source = backend/app
+omit =
+    */tests/*
+    */migrations/*
+    */__pycache__/*
+    */site-packages/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __repr__
+    raise AssertionError
+    raise NotImplementedError
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+    @abstractmethod
+    @abc.abstractmethod
+    if 0:
+    if False:
+    if not __debug__:
+    raise NotImplemented
+
+precision = 2
+show_missing = True
+skip_covered = False
+
+[html]
+directory = htmlcov
+
+[paths]
+source =
+    backend/app
+    */backend/app

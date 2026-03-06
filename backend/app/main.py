@@ -1,21 +1,44 @@
 """FastAPI Application Entry Point"""
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 import logging
+import time
 
 from app.config import settings
 from app.database import init_db
+from app.database_optimizer import add_database_indexes, analyze_database
 from app.routes import health, auth, text, user, avatar, guided
 
 # Configure logging
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
 logger = logging.getLogger(__name__)
+
+# Initialize rate limiter
+limiter = Limiter(key_func=get_remote_address)
 
 # Initialize FastAPI app
 app = FastAPI(
     title=settings.APP_NAME,
     description="AI-driven accessibility platform with dynamic content personalization",
-    version="0.1.0"
+    version="0.2.0"
+)
+
+# Add state for limiter
+app.state.limiter = limiter
+
+# Add security middleware - Trusted hosts
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:3000", "127.0.0.1:8000", "testserver"]
 )
 
 # Add CORS middleware
@@ -23,7 +46,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -33,7 +56,47 @@ async def startup():
     """Initialize database on startup"""
     init_db()
     logger.info("Database initialized")
+    
+    # Optimize database
+    add_database_indexes()
+    analyze_database()
+    logger.info("Database indexes created and analyzed")
+    
     logger.info(f"CORS allowed origins: {settings.CORS_ORIGINS}")
+    logger.info("Rate limiting enabled: 100 requests/minute per IP")
+    logger.info("Security headers enabled")
+    logger.info("✅ AAI Backend API Ready for requests")
+
+
+# Custom exception handlers
+@app.exception_handler(RateLimitExceeded)
+async def rate_limit_handler(request, exc):
+    """Handle rate limit exceeded errors"""
+    return JSONResponse(
+        status_code=429,
+        content={"detail": "Rate limit exceeded. Max 100 requests per minute."}
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request, exc):
+    """Handle validation errors with better messages"""
+    return JSONResponse(
+        status_code=400,
+        content={"detail": "Invalid request. Please check your input."}
+    )
+
+
+# Health check for monitoring
+@app.get("/health")
+@limiter.limit("100/minute")
+async def health_check(request):
+    """Health check endpoint"""
+    return {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "service": "AAI Backend API"
+    }
 
 
 # Include routers
@@ -46,12 +109,14 @@ app.include_router(guided.router, prefix="/api/v1")
 
 
 @app.get("/")
-async def root():
+@limiter.limit("100/minute")
+async def root(request):
     """Root endpoint"""
     return {
         "message": "Welcome to Adaptive Accessibility Intelligence (AAI)",
         "docs": "/docs",
-        "health": "/api/v1/health"
+        "health": "/api/v1/health",
+        "version": "0.2.0"
     }
 
 
