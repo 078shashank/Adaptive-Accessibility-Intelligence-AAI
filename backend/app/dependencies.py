@@ -63,6 +63,37 @@ def get_current_user(
     return user
 
 
+def get_current_user_optional(
+    authorization: Optional[str] = Header(None),
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    """
+    Dependency: Optionally get current user from JWT token (returns None if no token)
+    
+    Args:
+        authorization: Bearer token from Authorization header
+        db: Database session
+        
+    Returns:
+        User model or None
+    """
+    if not authorization or not authorization.startswith("Bearer "):
+        return None  # Return None instead of raising exception
+    
+    token = authorization.split(" ")[1]
+    
+    try:
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+    except JWTError:
+        return None
+    
+    user = db.query(User).filter(User.email == email).first()
+    return user
+
+
 def create_access_token(email: str, expires_delta: Optional[timedelta] = None) -> str:
     """
     Create JWT access token

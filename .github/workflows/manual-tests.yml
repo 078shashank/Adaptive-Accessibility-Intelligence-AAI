@@ -1,0 +1,67 @@
+name: Manual Trigger Tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_type:
+        description: 'Type of test to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - comprehensive
+          - edge-cases
+          - integration
+          - quick-smoke
+
+jobs:
+  manual-test:
+    name: Manual Test Execution
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+    
+    - name: Run All Tests
+      if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'comprehensive'
+      run: |
+        echo "Running comprehensive test suite..."
+        python comprehensive_testing.py
+    
+    - name: Run Edge Case Tests
+      if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'edge-cases'
+      run: |
+        echo "Running edge case tests..."
+        python edge_case_testing.py
+    
+    - name: Run Integration Tests
+      if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'integration'
+      run: |
+        echo "Running integration tests..."
+        python test_asl_integration.py
+    
+    - name: Quick Smoke Test
+      if: github.event.inputs.test_type == 'all' || github.event.inputs.test_type == 'quick-smoke'
+      run: |
+        echo "Running smoke tests..."
+        python -m py_compile comprehensive_testing.py verify_phase11.py test_asl_integration.py edge_case_testing.py
+        echo "✓ All files compiled successfully"
+    
+    - name: Test Summary
+      run: |
+        echo "================================"
+        echo "MANUAL TEST EXECUTION COMPLETE"
+        echo "Test Type: ${{ github.event.inputs.test_type }}"
+        echo "Status: Success"
+        echo "================================"
