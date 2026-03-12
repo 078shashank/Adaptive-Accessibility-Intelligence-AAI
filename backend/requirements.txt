@@ -1,19 +1,17 @@
-fastapi==0.104.1
-uvicorn==0.24.0
-sqlalchemy==2.0.23
-pydantic==2.5.0
+fastapi==0.109.0
+uvicorn==0.27.0
+sqlalchemy==2.0.25
+pydantic==2.6.0
 pydantic-settings==2.1.0
 python-jose[cryptography]==3.3.0
-bcrypt==4.1.1
+bcrypt==4.1.2
 python-dotenv==1.0.0
 pytest==7.4.3
 pytest-asyncio==0.21.1
-httpx==0.25.2
-transformers==4.35.2
+httpx==0.26.0
+transformers==4.37.2
 requests==2.31.0
 aiofiles==23.2.1
 slowapi==0.1.8
 email-validator==2.1.0
-# TODO: Migrate from passlib (unmaintained) to pwdlib or bcrypt directly before Python 3.13
-# See: https://github.com/Hynek/passlib/issues/163
-passlib==1.7.4
+bcrypt==4.1.2
