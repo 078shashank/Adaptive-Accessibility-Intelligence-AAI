@@ -17,8 +17,8 @@ jobs:
     
     - name: Set up Python
       uses: actions/setup-python@v4
-    with:
-       python-version: '3.11'
+      with:
+        python-version: '3.11'
     
     - name: Install Dependencies
       run: |
@@ -30,18 +30,18 @@ jobs:
     
     - name: Run Tests with Coverage
       run: |
-       echo "Running backend tests with coverage tracking..."
+        echo "Running backend tests with coverage tracking..."
         cd backend
-       coverage run -m pytest app/tests/ -v
-       coverage report -m
-       coverage xml
-       coverage html
-       echo "✓ Coverage report generated"
+        coverage run -m pytest app/tests/ -v
+        coverage report -m
+        coverage xml
+        coverage html
+        echo "✓ Coverage report generated"
 
     - name: Upload Coverage Reports
       uses: codecov/codecov-action@v3
       with:
-        files: ./coverage.xml
+        files: ./backend/coverage.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: false
@@ -50,7 +50,7 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: htmlcov/
+        path: backend/htmlcov/
         retention-days: 30
     
     - name: Comment Coverage on PR

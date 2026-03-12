@@ -74,7 +74,7 @@ python comprehensive_testing.py || echo "⚠️  Script had issues(non-critical)
     cd backend
     pip install pytest-cov
     pytest --cov=app --cov-report=xml --cov-report=term-missing app/tests/
-   echo "✓ Backend tests completed successfully"
+    echo "✓ Backend tests completed successfully"
 ```
 
 ---
@@ -100,10 +100,10 @@ python comprehensive_testing.py || echo "⚠️  Script had issues(non-critical)
 # Unit Tests (Line 65-68):
 - name: Run Unit Tests
   run: |
-  echo "Running backend pytest tests..."
-    cd backend
-    python -m pytest app/tests/ -v --tb=short
-  echo "✓ Backend tests completed"
+    echo "Running backend pytest tests..."
+      cd backend
+      python -m pytest app/tests/ -v --tb=short --cov=. --cov-report=term --cov-report=xml
+    echo "✓ Backend tests completed"
 ```
 
 ---
@@ -119,8 +119,8 @@ python comprehensive_testing.py || echo "⚠️  Script had issues(non-critical)
 ```yaml
 - name: Set up Python
   uses: actions/setup-python@v4
- with:
-   python-version: '3.11'  # Changed from 3.13
+  with:
+    python-version: '3.11'  # Changed from 3.13
 
 - name: Install Dependencies
   run: |
@@ -132,13 +132,13 @@ python comprehensive_testing.py || echo "⚠️  Script had issues(non-critical)
 
 - name: Run Tests with Coverage
   run: |
-  echo "Running backend tests with coverage tracking..."
-    cd backend
-  coverage run -m pytest app/tests/ -v
-  coverage report -m
-  coverage xml
-  coverage html
-  echo "✓ Coverage report generated"
+    echo "Running backend tests with coverage tracking..."
+      cd backend
+      coverage run -m pytest app/tests/ -v
+      coverage report -m
+      coverage xml
+      coverage html
+    echo "✓ Coverage report generated"
 ```
 
 ---
