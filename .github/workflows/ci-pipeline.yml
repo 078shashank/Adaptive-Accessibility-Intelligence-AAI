@@ -67,6 +67,8 @@ jobs:
         echo "Running backend pytest tests..."
         cd backend
         python -m pytest app/tests/ -v --tb=short --cov=. --cov-report=term --cov-report=xml
+        cp .coverage ../.coverage
+        cp coverage.xml ../coverage.xml
         echo "✓ Backend tests completed"
     
     - name: Run Comprehensive Test Scripts (Optional)
@@ -98,6 +100,7 @@ jobs:
         path: |
           test_results/
           .coverage
+          coverage.xml
         retention-days: 30
 
   code-quality:
