@@ -191,6 +191,7 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
     updateFrame();
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const animateHands = (animation: Animation) => {
     // This function is intentionally left empty for backwards compatibility
     // Animation logic is now handled by animateSignFrames
