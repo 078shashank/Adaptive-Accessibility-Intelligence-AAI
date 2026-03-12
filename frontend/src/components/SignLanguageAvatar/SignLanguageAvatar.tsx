@@ -127,6 +127,7 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
   ) => {
     const startTime = Date.now();
     const frameCount = frames.length;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     let animationFrameId: ReturnType<typeof setTimeout>;
 
     const updateFrame = () => {
@@ -191,8 +192,9 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
   };
 
   const animateHands = (animation: Animation) => {
-    // This function is now handled by animateSignFrames
-    // left in for backwards compatibility if needed
+    // This function is intentionally left empty for backwards compatibility
+    // Animation logic is now handled by animateSignFrames
+    console.log('animateHands deprecated - use animateSignFrames instead');
   };
 
   const pauseAnimation = () => {
