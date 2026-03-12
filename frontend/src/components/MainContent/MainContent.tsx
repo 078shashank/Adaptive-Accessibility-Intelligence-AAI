@@ -80,10 +80,42 @@ export const MainContent: React.FC<MainContentProps> = ({ settings }) => {
     };
   };
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(simplifiedText);
-    // Visual feedback
-    setError('Copied to clipboard!');
+  const handleCopy = async () => {
+    if (!simplifiedText) {
+      setError('No text to copy');
+      return;
+    }
+
+    try {
+      // Try modern Clipboard API first
+      await navigator.clipboard.writeText(simplifiedText);
+      setError('Copied to clipboard!');
+    } catch (err) {
+      // Fallback for older browsers or restricted contexts
+      try {
+        const textArea = document.createElement('textarea');
+        textArea.value = simplifiedText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          setError('Copied to clipboard!');
+        } else {
+          setError('Failed to copy text');
+        }
+      } catch (fallbackError) {
+        setError('Unable to copy. Please select and copy manually.');
+      }
+    }
+    
+    // Clear message after 2 seconds
     setTimeout(() => setError(''), 2000);
   };
 
