@@ -42,12 +42,12 @@ class TestHealthCheck:
 
     def test_health_check_returns_200(self):
         """Test that health check endpoint returns 200"""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
         assert response.status_code == 200
 
     def test_health_check_has_status(self):
         """Test that health check response has status field"""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
         data = response.json()
         assert "status" in data
 
@@ -58,7 +58,7 @@ class TestAuthEndpoints:
     def test_register_user_success(self):
         """Test successful user registration"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -74,7 +74,7 @@ class TestAuthEndpoints:
         """Test registration with duplicate email fails"""
         # First registration
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -83,7 +83,7 @@ class TestAuthEndpoints:
         )
         # Second registration with same email
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -95,7 +95,7 @@ class TestAuthEndpoints:
     def test_register_password_too_short(self):
         """Test registration with password less than 8 characters"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "short",
@@ -107,7 +107,7 @@ class TestAuthEndpoints:
     def test_register_invalid_email(self):
         """Test registration with invalid email format"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "not-an-email",
                 "password": "TestPassword123",
@@ -120,7 +120,7 @@ class TestAuthEndpoints:
         """Test successful login"""
         # Register user first
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -130,7 +130,7 @@ class TestAuthEndpoints:
         
         # Login
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123"
@@ -145,7 +145,7 @@ class TestAuthEndpoints:
         """Test login with wrong password"""
         # Register user first
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -155,7 +155,7 @@ class TestAuthEndpoints:
         
         # Login with wrong password
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "test@example.com",
                 "password": "WrongPassword123"
@@ -166,7 +166,7 @@ class TestAuthEndpoints:
     def test_login_nonexistent_user(self):
         """Test login with non-existent user"""
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "nonexistent@example.com",
                 "password": "TestPassword123"
@@ -180,7 +180,7 @@ class TestRootEndpoint:
 
     def test_root_returns_message(self):
         """Test that root endpoint returns a message"""
-        response = client.get("/")
+        response = client.get("/api/v1")
         assert response.status_code == 200
         data = response.json()
         assert "message" in data or isinstance(data, dict)
@@ -193,7 +193,7 @@ class TestEndpointAvailability:
         """Test that auth endpoints are available"""
         # Register endpoint
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "test@example.com",
                 "password": "TestPassword123",
@@ -204,7 +204,7 @@ class TestEndpointAvailability:
 
     def test_health_endpoint_exists(self):
         """Test that health endpoint is available"""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
         assert response.status_code == 200
 
     def test_404_nonexistent_endpoint(self):
@@ -219,7 +219,7 @@ class TestErrorHandling:
     def test_missing_required_fields(self):
         """Test that missing required fields return 422"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com"}  # Missing password
         )
         assert response.status_code == 422
@@ -227,14 +227,14 @@ class TestErrorHandling:
     def test_invalid_json(self):
         """Test that invalid JSON returns appropriate error"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             content="invalid json{"
         )
         assert response.status_code in [422, 400]
 
     def test_405_method_not_allowed(self):
         """Test that wrong HTTP method returns 405"""
-        response = client.put("/health")  # Health only supports GET
+        response = client.put("/api/v1/health")  # Health only supports GET
         assert response.status_code == 405
 
 
@@ -245,7 +245,7 @@ class TestIntegrationFlow:
         """Test complete register and login flow"""
         # Register
         register_response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={
                 "email": "flow@example.com",
                 "password": "FlowPassword123",
@@ -256,7 +256,7 @@ class TestIntegrationFlow:
         
         # Login
         login_response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             json={
                 "email": "flow@example.com",
                 "password": "FlowPassword123"
@@ -275,7 +275,7 @@ class TestIntegrationFlow:
         
         for email, password, name in users:
             response = client.post(
-                "/auth/register",
+                "/api/v1/auth/register",
                 json={
                     "email": email,
                     "password": password,
