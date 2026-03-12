@@ -13,7 +13,7 @@ class TestGuidedModeService:
     def test_get_step_instructions(self):
         """Test getting instructions for a step"""
         instructions = GuidedModeService.get_step_instructions(GuidedStep.WELCOME)
-        
+
         assert instructions["title"] == "Welcome to Guided Mode"
         assert "description" in instructions
         assert "instruction" in instructions
@@ -21,31 +21,31 @@ class TestGuidedModeService:
     def test_get_next_step(self):
         """Test getting next step"""
         next_step = GuidedModeService.get_next_step(GuidedStep.WELCOME)
-        
+
         assert next_step == GuidedStep.PASTE_TEXT
 
     def test_get_next_step_at_end(self):
         """Test getting next step at the end"""
         next_step = GuidedModeService.get_next_step(GuidedStep.COMPLETE)
-        
+
         assert next_step is None
 
     def test_get_previous_step(self):
         """Test getting previous step"""
         prev_step = GuidedModeService.get_previous_step(GuidedStep.PASTE_TEXT)
-        
+
         assert prev_step == GuidedStep.WELCOME
 
     def test_get_previous_step_at_start(self):
         """Test getting previous step at the start"""
         prev_step = GuidedModeService.get_previous_step(GuidedStep.WELCOME)
-        
+
         assert prev_step is None
 
     def test_get_progress(self):
         """Test getting progress"""
         progress = GuidedModeService.get_progress(GuidedStep.PASTE_TEXT)
-        
+
         assert progress["current_step"] == 2  # Second step
         assert progress["total_steps"] == 6
         assert 0 < progress["percentage"] < 100

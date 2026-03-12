@@ -1,6 +1,5 @@
 """Integration Tests - Full workflow testing"""
 import pytest
-import json
 import time
 from fastapi.testclient import TestClient
 from app.main import app
@@ -26,7 +25,7 @@ class TestFullWorkflow:
         assert register_response.status_code == 200
         user_data = register_response.json()
         token = user_data["access_token"]
-        
+
         # 2. Get initial profile
         profile_response = client.get(
             "/api/v1/user/profile",
@@ -34,7 +33,7 @@ class TestFullWorkflow:
         )
         assert profile_response.status_code == 200
         assert profile_response.json()["font_size"] == 16
-        
+
         # 3. Update profile (enable avatar)
         update_response = client.put(
             "/api/v1/user/profile",
@@ -43,7 +42,7 @@ class TestFullWorkflow:
         )
         assert update_response.status_code == 200
         assert update_response.json()["show_avatar"] is True
-        
+
         # 4. Simplify text
         simplify_response = client.post(
             "/api/v1/text/simplify",
@@ -53,7 +52,7 @@ class TestFullWorkflow:
         assert simplify_response.status_code == 200
         simplified = simplify_response.json()["simplified_text"]
         assert len(simplified) < 100
-        
+
         # 5. Generate avatar for simplified text
         avatar_response = client.post(
             "/api/v1/avatar/sign",

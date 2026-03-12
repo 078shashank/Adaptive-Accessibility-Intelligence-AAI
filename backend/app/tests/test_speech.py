@@ -10,7 +10,7 @@ class TestSpeechService:
         """Test text preparation for speech synthesis"""
         text = "Hello @ world & friends"
         result = SpeechService.prepare_text_for_speech(text)
-        
+
         assert "and" in result
         assert "at" in result
         assert "@" not in result
@@ -20,7 +20,7 @@ class TestSpeechService:
         """Test text truncation for long texts"""
         long_text = "a " * 600
         result = SpeechService.prepare_text_for_speech(long_text, max_length=500)
-        
+
         assert len(result) <= 510  # Allow some buffer for sentence boundaries
 
     def test_validate_speech_rate(self):

@@ -1,8 +1,6 @@
 """Tests for Avatar Service and Routes"""
-import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from helper import TestHelper
 
 
 client = TestClient(app)
@@ -14,7 +12,7 @@ class TestAvatarService:
     def test_text_to_sign_animation(self):
         """Test text to sign animation conversion"""
         from app.services.avatar import SignLanguageAvatarService
-        
+
         result = SignLanguageAvatarService.text_to_sign_animation("hello world")
         
         assert result["text"] == "hello world"
@@ -25,7 +23,7 @@ class TestAvatarService:
     def test_split_text_for_avatar(self):
         """Test text splitting for sequential animation"""
         from app.services.avatar import SignLanguageAvatarService
-        
+
         long_text = "hello world this is a test of the sign language avatar"
         segments = SignLanguageAvatarService.split_text_for_avatar(long_text, words_per_segment=2)
         
@@ -35,7 +33,7 @@ class TestAvatarService:
     def test_get_sign_language_variants(self):
         """Test getting available sign language variants"""
         from app.services.avatar import SignLanguageAvatarService
-        
+
         variants = SignLanguageAvatarService.get_sign_language_variants()
         
         assert "ASL" in variants

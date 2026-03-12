@@ -1,8 +1,6 @@
 """Test for authentication service"""
-import pytest
 from fastapi.testclient import TestClient
 from app.main import app
-from app.database import override_get_db
 from app.services.auth import verify_password, get_password_hash
 
 
@@ -35,7 +33,7 @@ def test_register_duplicate_email():
             "password": "testpass123",
         },
     )
-    
+
     # Try to register with same email
     response = client.post(
         "/api/v1/auth/register",

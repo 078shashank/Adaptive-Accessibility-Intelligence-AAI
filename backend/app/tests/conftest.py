@@ -54,13 +54,13 @@ def test_user(db=next(override_get_db())):
     )
     db.add(user)
     db.flush()
-    
+
     # Create accessibility profile
     profile = AccessibilityProfile(user_id=user.id)
     db.add(profile)
     db.commit()
     db.refresh(user)
-    
+
     return user
 
 
