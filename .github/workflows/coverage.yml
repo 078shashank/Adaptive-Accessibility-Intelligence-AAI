@@ -17,22 +17,27 @@ jobs:
     
     - name: Set up Python
       uses: actions/setup-python@v4
-      with:
-        python-version: '3.13'
+    with:
+       python-version: '3.11'
     
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
+        cd backend
+        pip install -r requirements.txt
+        cd ..
         pip install pytest pytest-cov coverage
     
     - name: Run Tests with Coverage
       run: |
-        echo "Running tests with coverage tracking..."
-        coverage run -m pytest comprehensive_testing.py verify_phase11.py test_asl_integration.py 2>/dev/null || true
-        coverage report -m
-        coverage xml
-        coverage html
-    
+       echo "Running backend tests with coverage tracking..."
+        cd backend
+       coverage run -m pytest app/tests/ -v
+       coverage report -m
+       coverage xml
+       coverage html
+       echo "✓ Coverage report generated"
+
     - name: Upload Coverage Reports
       uses: codecov/codecov-action@v3
       with:

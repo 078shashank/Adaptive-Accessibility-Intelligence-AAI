@@ -47,7 +47,8 @@ jobs:
       run: |
         cd backend
         pip install pytest-cov
-        pytest --cov=app --cov-report=xml --cov-report=term app/tests/
+        pytest --cov=app --cov-report=xml --cov-report=term-missing app/tests/
+       echo "✓ Backend tests completed successfully"
     
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v3
