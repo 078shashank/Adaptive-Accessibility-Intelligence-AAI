@@ -1,0 +1,8 @@
+{
+  "extends": ["react-app"],
+  "rules": {
+    "@typescript-eslint/no-unused-vars": "warn",
+    "jsx-a11y/no-redundant-roles": "warn",
+    "react-hooks/exhaustive-deps": "warn"
+  }
+}
