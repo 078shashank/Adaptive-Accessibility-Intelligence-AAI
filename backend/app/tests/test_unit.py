@@ -86,12 +86,12 @@ class TestAuthEndpoints:
         # Register user
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         # Login
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "Test@1234"}
+            data={"username": "test@example.com", "password": "TestPassword123!"}
         )
         assert response.status_code == 200
         assert "access_token" in response.json()
@@ -102,12 +102,12 @@ class TestAuthEndpoints:
         # Register user
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         # Login with wrong password
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "WrongPassword"}
+            data={"username": "test@example.com", "password": "WrongPassword123!"}
         )
         assert response.status_code == 401
         assert "Invalid credentials" in response.json()["detail"]
@@ -116,7 +116,7 @@ class TestAuthEndpoints:
         """Test login with non-existent user"""
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "nonexistent@example.com", "password": "Test@1234"}
+            data={"username": "nonexistent@example.com", "password": "TestPassword123!"}
         )
         assert response.status_code == 401
 

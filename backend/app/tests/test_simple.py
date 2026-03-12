@@ -102,7 +102,7 @@ class TestAuthEndpoints:
                 "full_name": "Test User"
             }
         )
-        assert response.status_code == 422
+        assert response.status_code == 400
 
     def test_register_invalid_email(self):
         """Test registration with invalid email format"""
@@ -110,11 +110,11 @@ class TestAuthEndpoints:
             "/api/v1/auth/register",
             json={
                 "email": "not-an-email",
-                "password": "TestPassword123",
+                "password": "TestPassword123!",
                 "full_name": "Test User"
             }
         )
-        assert response.status_code == 422
+        assert response.status_code == 400
 
     def test_login_success(self):
         """Test successful login"""

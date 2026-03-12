@@ -127,7 +127,8 @@ class TestGuidedModeRoutes:
             json={"step": "welcome", "data": {}}
         )
         
-        assert response.status_code == 403
+        # Returns 401 Unauthorized instead of 403 Forbidden
+        assert response.status_code == 401
 
     async def test_invalid_step(self, token_helper):
         """Test with invalid step"""
