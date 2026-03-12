@@ -9,17 +9,21 @@ client = TestClient(app)
 
 def test_register_user():
     """Test user registration"""
+    import time
+    timestamp = int(time.time() * 1000)
+    unique_email = f"newuser_{timestamp}@example.com"
+    
     response = client.post(
         "/api/v1/auth/register",
         json={
-            "email": "newuser@example.com",
+            "email": unique_email,
             "password": "testpass123",
             "full_name": "Test User",
         },
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["email"] == "newuser@example.com"
+    assert data["email"] == unique_email
     assert data["full_name"] == "Test User"
 
 

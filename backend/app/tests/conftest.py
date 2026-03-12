@@ -73,11 +73,15 @@ def test_client():
 @pytest.fixture
 def token_helper():
     """Helper fixture to get authentication token"""
+    import time
+    timestamp = int(time.time() * 1000)
+    unique_email = f"testuser_{timestamp}@example.com"
+    
     # Register a test user
     register_response = client.post(
         "/api/v1/auth/register",
         json={
-            "email": "testuser@example.com",
+            "email": unique_email,
             "password": "TestPassword123!",
             "full_name": "Test User"
         }
@@ -87,7 +91,7 @@ def token_helper():
     # Login to get token
     login_response = client.post(
         "/api/v1/auth/login",
-        data={"username": "testuser@example.com", "password": "TestPassword123!"}
+        json={"email": unique_email, "password": "TestPassword123!"}
     )
     assert login_response.status_code == 200
     
