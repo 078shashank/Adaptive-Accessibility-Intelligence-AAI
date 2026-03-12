@@ -363,7 +363,8 @@ converter_static_methods = [name for name, method in inspect.getmembers(SignLang
 print(f"  SignLanguageConverter:")
 print(f"    - Static methods: {len([m for m in dir(SignLanguageConverter) if not m.startswith('_')])}")
 print(f"    - Lines of code: {len(converter_source.split(chr(10)))}")
-print(f"    - Documentation: {'✓ Comprehensive docstrings' if '\"\"\"' in converter_source else '✗ Missing documentation'}")
+has_docs = '"""' in converter_source
+print(f"    - Documentation: {'✓ Comprehensive docstrings' if has_docs else '✗ Missing documentation'}")
 
 # Check avatar service
 avatar_source = inspect.getsource(SignLanguageAvatarService)
