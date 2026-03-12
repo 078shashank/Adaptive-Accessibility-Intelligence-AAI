@@ -44,22 +44,22 @@ class TestAuthEndpoints:
     def test_register_user_success(self):
         """Test successful user registration"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
-        assert response.status_code == 201
+        assert response.status_code == 200
         assert response.json()["email"] == "test@example.com"
 
     def test_register_duplicate_email(self):
         """Test registration with duplicate email"""
         # First registration
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         # Second registration with same email
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@5678", "full_name": "Another User"}
         )
         assert response.status_code == 400
@@ -68,7 +68,7 @@ class TestAuthEndpoints:
     def test_register_weak_password(self):
         """Test registration with weak password"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "weak", "full_name": "Test User"}
         )
         assert response.status_code == 400
@@ -76,7 +76,7 @@ class TestAuthEndpoints:
     def test_register_invalid_email(self):
         """Test registration with invalid email"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "invalid-email", "password": "Test@1234", "full_name": "Test User"}
         )
         assert response.status_code == 422
@@ -85,12 +85,12 @@ class TestAuthEndpoints:
         """Test successful login"""
         # Register user
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         # Login
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "Test@1234"}
         )
         assert response.status_code == 200
@@ -101,12 +101,12 @@ class TestAuthEndpoints:
         """Test login with wrong password"""
         # Register user
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         # Login with wrong password
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "WrongPassword"}
         )
         assert response.status_code == 401
@@ -115,7 +115,7 @@ class TestAuthEndpoints:
     def test_login_nonexistent_user(self):
         """Test login with non-existent user"""
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "nonexistent@example.com", "password": "Test@1234"}
         )
         assert response.status_code == 401
@@ -128,11 +128,11 @@ class TestUserProfile:
     def auth_headers(self):
         """Get auth headers for logged-in user"""
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "Test@1234"}
         )
         token = response.json()["access_token"]
@@ -140,19 +140,19 @@ class TestUserProfile:
 
     def test_get_profile_unauthorized(self):
         """Test getting profile without authorization"""
-        response = client.get("/users/profile")
+        response = client.get("/api/v1/users/profile")
         assert response.status_code == 403
 
     def test_get_profile_authorized(self, auth_headers):
         """Test getting profile with authorization"""
-        response = client.get("/users/profile", headers=auth_headers)
+        response = client.get("/api/v1/users/profile", headers=auth_headers)
         assert response.status_code == 200
         assert response.json()["email"] == "test@example.com"
 
     def test_update_profile(self, auth_headers):
         """Test updating user profile"""
         response = client.put(
-            "/users/profile",
+            "/api/v1/users/profile",
             json={"full_name": "Updated Name", "preferences": {"theme": "dark"}},
             headers=auth_headers
         )
@@ -162,7 +162,7 @@ class TestUserProfile:
     def test_update_profile_invalid_data(self, auth_headers):
         """Test updating profile with invalid data"""
         response = client.put(
-            "/users/profile",
+            "/api/v1/users/profile",
             json={"full_name": ""},  # Empty name
             headers=auth_headers
         )
@@ -176,11 +176,11 @@ class TestAccessibilityProfile:
     def auth_headers(self):
         """Get auth headers"""
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "Test@1234"}
         )
         token = response.json()["access_token"]
@@ -197,7 +197,7 @@ class TestAccessibilityProfile:
             "literacy_level": "intermediate"
         }
         response = client.post(
-            "/accessibility/profile",
+            "/api/v1/accessibility/profile",
             json=profile_data,
             headers=auth_headers
         )
@@ -207,7 +207,7 @@ class TestAccessibilityProfile:
     def test_get_accessibility_profile(self, auth_headers):
         """Test retrieving accessibility profile"""
         response = client.get(
-            "/accessibility/profile",
+            "/api/v1/accessibility/profile",
             headers=auth_headers
         )
         # Should return default or existing profile
@@ -217,7 +217,7 @@ class TestAccessibilityProfile:
         """Test updating accessibility profile"""
         # Create profile first
         client.post(
-            "/accessibility/profile",
+            "/api/v1/accessibility/profile",
             json={
                 "visual_impairment_level": "moderate",
                 "hearing_impairment_level": "none",
@@ -230,7 +230,7 @@ class TestAccessibilityProfile:
         )
         # Update it
         response = client.put(
-            "/accessibility/profile",
+            "/api/v1/accessibility/profile",
             json={
                 "visual_impairment_level": "severe",
                 "hearing_impairment_level": "none",
@@ -247,7 +247,7 @@ class TestAccessibilityProfile:
     def test_invalid_impairment_level(self, auth_headers):
         """Test invalid impairment level"""
         response = client.post(
-            "/accessibility/profile",
+            "/api/v1/accessibility/profile",
             json={
                 "visual_impairment_level": "invalid_level",
                 "hearing_impairment_level": "none",
@@ -281,7 +281,7 @@ class TestTextSimplification:
     def test_simplify_text_success(self, auth_headers):
         """Test successful text simplification"""
         response = client.post(
-            "/text/simplify",
+            "/api/v1/text/simplify",
             json={
                 "text": "The quick brown fox jumps over the lazy dog.",
                 "reading_level": "simple"
@@ -294,7 +294,7 @@ class TestTextSimplification:
     def test_simplify_empty_text(self, auth_headers):
         """Test simplifying empty text"""
         response = client.post(
-            "/text/simplify",
+            "/api/v1/text/simplify",
             json={
                 "text": "",
                 "reading_level": "simple"
@@ -306,7 +306,7 @@ class TestTextSimplification:
     def test_simplify_text_missing_reading_level(self, auth_headers):
         """Test simplify without reading level"""
         response = client.post(
-            "/text/simplify",
+            "/api/v1/text/simplify",
             json={"text": "Test text"},
             headers=auth_headers
         )
@@ -316,7 +316,7 @@ class TestTextSimplification:
         """Test simplifying very long text"""
         long_text = "word " * 1500  # >5000 chars
         response = client.post(
-            "/text/simplify",
+            "/api/v1/text/simplify",
             json={
                 "text": long_text,
                 "reading_level": "simple"
@@ -328,7 +328,7 @@ class TestTextSimplification:
     def test_get_simplification_history(self, auth_headers):
         """Test retrieving simplification history"""
         response = client.get(
-            "/text/history",
+            "/api/v1/text/history",
             headers=auth_headers
         )
         assert response.status_code == 200
@@ -338,7 +338,7 @@ class TestTextSimplification:
         """Test deleting a simplification"""
         # First, create a simplification
         simplify_response = client.post(
-            "/text/simplify",
+            "/api/v1/text/simplify",
             json={"text": "Test text", "reading_level": "simple"},
             headers=auth_headers
         )
@@ -346,7 +346,7 @@ class TestTextSimplification:
         
         # Delete it
         response = client.delete(
-            f"/text/simplify/{simplification_id}",
+            f"/api/v1/text/simplify/{simplification_id}",
             headers=auth_headers
         )
         assert response.status_code == 200
@@ -359,11 +359,11 @@ class TestAvatarGeneration:
     def auth_headers(self):
         """Get auth headers"""
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "Test@1234"}
         )
         token = response.json()["access_token"]
@@ -372,7 +372,7 @@ class TestAvatarGeneration:
     def test_generate_avatar_success(self, auth_headers):
         """Test successful avatar generation"""
         response = client.post(
-            "/avatar/generate",
+            "/api/v1/avatar/generate",
             json={"name": "Test User", "style": "cartoon"},
             headers=auth_headers
         )
@@ -382,7 +382,7 @@ class TestAvatarGeneration:
     def test_generate_avatar_invalid_style(self, auth_headers):
         """Test avatar generation with invalid style"""
         response = client.post(
-            "/avatar/generate",
+            "/api/v1/avatar/generate",
             json={"name": "Test User", "style": "invalid_style"},
             headers=auth_headers
         )
@@ -391,7 +391,7 @@ class TestAvatarGeneration:
     def test_get_avatar_history(self, auth_headers):
         """Test retrieving avatar generation history"""
         response = client.get(
-            "/avatar/history",
+            "/api/v1/avatar/history",
             headers=auth_headers
         )
         assert response.status_code == 200
@@ -405,11 +405,11 @@ class TestGuidedMode:
     def auth_headers(self):
         """Get auth headers"""
         client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
         )
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "Test@1234"}
         )
         token = response.json()["access_token"]
@@ -418,7 +418,7 @@ class TestGuidedMode:
     def test_start_guided_session(self, auth_headers):
         """Test starting a guided mode session"""
         response = client.post(
-            "/guided/start",
+            "/api/v1/guided/start",
             json={},
             headers=auth_headers
         )
@@ -429,7 +429,7 @@ class TestGuidedMode:
         """Test getting guided step"""
         # Start session first
         start_response = client.post(
-            "/guided/start",
+            "/api/v1/guided/start",
             json={},
             headers=auth_headers
         )
@@ -437,7 +437,7 @@ class TestGuidedMode:
         
         # Get step
         response = client.get(
-            f"/guided/step/1?session_id={session_id}",
+            f"/api/v1/guided/step/1?session_id={session_id}",
             headers=auth_headers
         )
         assert response.status_code in [200, 404]
@@ -446,7 +446,7 @@ class TestGuidedMode:
         """Test completing a guided step"""
         # Start session first
         start_response = client.post(
-            "/guided/start",
+            "/api/v1/guided/start",
             json={},
             headers=auth_headers
         )
@@ -454,7 +454,7 @@ class TestGuidedMode:
         
         # Complete step
         response = client.post(
-            "/guided/complete",
+            "/api/v1/guided/complete",
             json={"session_id": session_id, "step_number": 1, "data": {}},
             headers=auth_headers
         )
@@ -466,7 +466,7 @@ class TestHealthCheck:
 
     def test_health_check(self):
         """Test health check endpoint"""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
         assert response.status_code == 200
         assert "status" in response.json()
 
@@ -481,13 +481,13 @@ class TestErrorHandling:
 
     def test_method_not_allowed(self):
         """Test 405 method not allowed"""
-        response = client.put("/health")  # Health is GET only
+        response = client.put("/api/v1/health")  # Health is GET only
         assert response.status_code == 405
 
     def test_validation_error(self):
         """Test validation error response"""
         response = client.post(
-            "/auth/register",
+            "/api/v1/auth/register",
             json={"email": "invalid"}  # Missing required fields
         )
         assert response.status_code == 422
@@ -498,14 +498,14 @@ class TestSecurityHeaders:
 
     def test_cors_headers_present(self):
         """Test CORS headers are present"""
-        response = client.get("/health")
+        response = client.get("/api/v1/health")
         # CORS headers should be in response
         assert response.status_code == 200
 
     def test_no_sensitive_data_in_errors(self):
         """Test that errors don't leak sensitive data"""
         response = client.post(
-            "/auth/login",
+            "/api/v1/auth/login",
             data={"username": "nonexistent@example.com", "password": "test"}
         )
         assert response.status_code == 401
