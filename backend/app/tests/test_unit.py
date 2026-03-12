@@ -84,15 +84,22 @@ class TestAuthEndpoints:
     def test_login_success(self):
         """Test successful login"""
         # Register user
-        client.post(
+        register_response = client.post(
             "/api/v1/auth/register",
             json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
+        # Debug: Check registration response
+        if register_response.status_code != 200:
+            print(f"Registration failed: {register_response.json()}")
+        
         # Login
         response = client.post(
             "/api/v1/auth/login",
             data={"username": "test@example.com", "password": "TestPassword123!"}
         )
+        # Debug: Check login response
+        if response.status_code != 200:
+            print(f"Login failed: {response.json()}")
         assert response.status_code == 200
         assert "access_token" in response.json()
         assert response.json()["token_type"] == "bearer"
