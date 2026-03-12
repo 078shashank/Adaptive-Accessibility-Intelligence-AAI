@@ -60,6 +60,7 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
     if (text && isVisible) {
       generateAvatarAnimation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text, isVisible]);
 
   const generateAvatarAnimation = async () => {
@@ -88,7 +89,6 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
 
     setIsPlaying(true);
     let wordIndex = 0;
-    let animationFrameId: NodeJS.Timeout;
 
     const playNextWord = () => {
       if (wordIndex < avatarData.animation_data.animations.length) {
@@ -99,18 +99,18 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
         // Get the ASL sign animation for this word
         const signAnimation = getSignAnimation(word);
 
-        // Animate through the sign frames
-        animateSignFrames(signAnimation.frames, animation.duration, () => {
+        if (signAnimation) {
+          animateSignFrames(signAnimation.frames, signAnimation.duration || 1000, () => {
+            wordIndex++;
+            playNextWord();
+          });
+        } else {
           wordIndex++;
           playNextWord();
-        });
+        }
       } else {
         setIsPlaying(false);
-        setHandPosition({
-          left: { x: 0, y: 0, rotation: 0, spread: 0 },
-          right: { x: 0, y: 0, rotation: 0, spread: 0 },
-          bodyRotation: 0,
-        });
+        setCurrentWordIndex(0);
         if (onComplete) {
           onComplete();
         }
@@ -127,7 +127,7 @@ export const SignLanguageAvatar: React.FC<SignLanguageAvatarProps> = ({
   ) => {
     const startTime = Date.now();
     const frameCount = frames.length;
-    let animationFrameId: NodeJS.Timeout;
+    let animationFrameId: ReturnType<typeof setTimeout>;
 
     const updateFrame = () => {
       const elapsed = Date.now() - startTime;

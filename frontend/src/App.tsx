@@ -8,7 +8,7 @@ import './styles/index.css';
 
 const App: React.FC = () => {
   const { settings, updateSetting, resetSettings, loaded } = useAccessibilitySettings();
-  const [authenticated, setAuthenticated] = useState(false);
+  const [, setAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   // Check health and login on mount

@@ -15,7 +15,6 @@ export const AccessibilityPanel: React.FC<AccessibilityPanelProps> = ({
 }) => {
   return (
     <aside
-      role="complementary"
       aria-label="Accessibility Controls"
       className="accessibility-panel"
     >

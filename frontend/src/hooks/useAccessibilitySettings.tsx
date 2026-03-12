@@ -1,6 +1,6 @@
 /** Accessibility Settings Hook */
 import { useState, useEffect } from 'react';
-import { AccessibilitySettings, FontFamily, ColorOverlay, ReadingLevel } from '../types/accessibility';
+import { AccessibilitySettings } from '../types/accessibility';
 
 const DEFAULT_SETTINGS: AccessibilitySettings = {
   fontSize: 16,
