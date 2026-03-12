@@ -68,3 +68,28 @@ def test_user(db=next(override_get_db())):
 def test_client():
     """Return FastAPI test client"""
     return client
+
+
+@pytest.fixture
+def token_helper():
+    """Helper fixture to get authentication token"""
+    # Register a test user
+    register_response = client.post(
+        "/api/v1/auth/register",
+        json={
+            "email": "testuser@example.com",
+            "password": "TestPassword123!",
+            "full_name": "Test User"
+        }
+    )
+    assert register_response.status_code == 200
+    
+    # Login to get token
+    login_response = client.post(
+        "/api/v1/auth/login",
+        data={"username": "testuser@example.com", "password": "TestPassword123!"}
+    )
+    assert login_response.status_code == 200
+    
+    token = login_response.json()["access_token"]
+    return {"token": token, "headers": {"Authorization": f"Bearer {token}"}}

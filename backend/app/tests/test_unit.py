@@ -129,11 +129,11 @@ class TestUserProfile:
         """Get auth headers for logged-in user"""
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "Test@1234"}
+            data={"username": "test@example.com", "password": "TestPassword123!"}
         )
         token = response.json()["access_token"]
         return {"Authorization": f"Bearer {token}"}
@@ -177,11 +177,11 @@ class TestAccessibilityProfile:
         """Get auth headers"""
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "Test@1234"}
+            data={"username": "test@example.com", "password": "TestPassword123!"}
         )
         token = response.json()["access_token"]
         return {"Authorization": f"Bearer {token}"}
@@ -360,11 +360,11 @@ class TestAvatarGeneration:
         """Get auth headers"""
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "Test@1234"}
+            data={"username": "test@example.com", "password": "TestPassword123!"}
         )
         token = response.json()["access_token"]
         return {"Authorization": f"Bearer {token}"}
@@ -406,11 +406,11 @@ class TestGuidedMode:
         """Get auth headers"""
         client.post(
             "/api/v1/auth/register",
-            json={"email": "test@example.com", "password": "Test@1234", "full_name": "Test User"}
+            json={"email": "test@example.com", "password": "TestPassword123!", "full_name": "Test User"}
         )
         response = client.post(
             "/api/v1/auth/login",
-            data={"username": "test@example.com", "password": "Test@1234"}
+            data={"username": "test@example.com", "password": "TestPassword123!"}
         )
         token = response.json()["access_token"]
         return {"Authorization": f"Bearer {token}"}
