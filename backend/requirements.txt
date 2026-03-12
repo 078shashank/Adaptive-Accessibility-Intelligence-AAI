@@ -14,4 +14,6 @@ requests==2.31.0
 aiofiles==23.2.1
 slowapi==0.1.8
 email-validator==2.1.0
+# TODO: Migrate from passlib (unmaintained) to pwdlib or bcrypt directly before Python 3.13
+# See: https://github.com/Hynek/passlib/issues/163
 passlib==1.7.4
