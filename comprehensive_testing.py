@@ -373,7 +373,8 @@ avatar_methods = [name for name, method in inspect.getmembers(SignLanguageAvatar
 print(f"\n  SignLanguageAvatarService:")
 print(f"    - Public methods: {len([m for m in dir(SignLanguageAvatarService) if not m.startswith('_')])}")
 print(f"    - Lines of code: {len(avatar_source.split(chr(10)))}")
-print(f"    - Documentation: {'✓ Comprehensive docstrings' if '\"\"\"' in avatar_source else '✗ Missing documentation'}")
+has_avatar_docs = '"""' in avatar_source
+print(f"    - Documentation: {'✓ Comprehensive docstrings' if has_avatar_docs else '✗ Missing documentation'}")
 
 # Check for code complexity
 print(f"\n✓ Analyzing complexity metrics...")
