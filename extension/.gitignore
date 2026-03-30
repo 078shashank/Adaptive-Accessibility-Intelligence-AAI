@@ -24,9 +24,7 @@ yarn-error.log*
 # Extension package
 *.zip
 
-# Test files
-*.test.js
-*.spec.js
+# Test coverage (keep test files themselves)
 coverage/
 
 # Environment variables

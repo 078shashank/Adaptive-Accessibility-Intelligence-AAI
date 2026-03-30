@@ -21,7 +21,8 @@ Adaptive Accessibility Intelligence (AAI) - Chrome Extension for reading assista
 ```bash
 cd extension
 npm install
-npm run build
+npm run build:dev  # For development with auto-reload
+# Or use: npm run build  # For production build
 ```
 
 2. **Load in Chrome**:
@@ -45,12 +46,28 @@ npm run package
 The extension requires the AAI FastAPI backend running locally:
 
 ```bash
-# Start the backend server
+# Setup Python virtual environment (recommended)
 cd ../backend
+python -m venv venv
+
+# Activate virtual environment
+# Windows PowerShell:
+.\venv\Scripts\Activate.ps1
+# Command Prompt:
+venv\Scripts\activate.bat
+# macOS/Linux:
+source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Start the backend server
 uvicorn app.main:app --reload
 ```
 
 Backend should be accessible at `http://localhost:8000`
+
+Verify backend is running: http://localhost:8000/health
 
 ## Usage
 

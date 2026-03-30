@@ -3,14 +3,43 @@
  * Injected into all web pages to provide accessibility features
  */
 
-import { storageService } from './services/storage.js';
-import domUtils from './utils/dom-utils.js';
+import { storageService } from '../services/storage.js';
+import domUtils from '../utils/dom-utils.js';
 
 // State management
 let currentSettings = {};
 let accessibilityPanel = null;
 
+// Font size validation constants
+const MIN_FONT_SIZE = 8;
+const MAX_FONT_SIZE = 72;
+const DEFAULT_FONT_SIZE = 16;
+
 console.log('AAI Content Script loaded');
+
+/**
+ * Validate and sanitize font size
+ * @param {number|string} size - Font size to validate
+ * @returns {number} - Validated font size in pixels
+ */
+function validateFontSize(size) {
+  // Convert to number
+  const numericSize = typeof size === 'string' ? parseInt(size, 10) : size;
+  
+  // Check if valid number
+  if (!Number.isFinite(numericSize)) {
+    console.warn('Invalid font size:', size, 'using default');
+    return DEFAULT_FONT_SIZE;
+  }
+  
+  // Check range
+  if (numericSize < MIN_FONT_SIZE || numericSize > MAX_FONT_SIZE) {
+    console.warn(`Font size ${numericSize}px out of range [${MIN_FONT_SIZE}-${MAX_FONT_SIZE}], clamping`);
+    return Math.max(MIN_FONT_SIZE, Math.min(MAX_FONT_SIZE, numericSize));
+  }
+  
+  return numericSize;
+}
 
 // Initialize on load
 initializeContentScript();
@@ -56,9 +85,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
       
     case 'simplify-text':
-      handleTextSimplification(request.text);
-      sendResponse({ success: true });
-      break;
+      // Handle async operation properly - keep channel open
+      (async () => {
+        try {
+          await handleTextSimplification(request.text);
+          sendResponse({ success: true });
+        } catch (error) {
+          console.error('Error simplifying text:', error);
+          sendResponse({ success: false, error: error.message });
+        }
+      })();
+      return true; // Keep channel open for async response
       
     case 'read-aloud':
       handleReadAloud(request.text);
@@ -81,9 +118,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
  * Apply all settings to the page
  */
 function applyAllSettings(settings) {
-  // Font size
+  // Font size - validate and sanitize
   if (settings.fontSize) {
-    document.body.style.fontSize = `${settings.fontSize}px`;
+    const validatedSize = validateFontSize(settings.fontSize);
+    document.body.style.fontSize = `${validatedSize}px`;
   }
   
   // Line spacing
@@ -178,16 +216,25 @@ async function handleTextSimplification(text) {
     // Show loading indicator
     const tooltip = domUtils.createTooltip('Simplifying...', document.body);
     
-    // Call backend API
-    const response = await fetch('http://localhost:8000/api/v1/text/simplify', {
+    // Get API base URL from settings or use default
+    const apiBaseUrl = currentSettings.apiBaseUrl || 'http://localhost:8000';
+    
+    // Create abort controller for timeout
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
+    // Call backend API with timeout
+    const response = await fetch(`${apiBaseUrl}/api/v1/text/simplify`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
         text, 
         reading_level: currentSettings.readingLevel || 'intermediate' 
-      })
+      }),
+      signal: controller.signal
     });
     
+    clearTimeout(timeoutId);
     tooltip.remove();
     
     if (!response.ok) {
@@ -207,10 +254,19 @@ async function handleTextSimplification(text) {
     
   } catch (error) {
     console.error('Text simplification failed:', error);
-    const errorTooltip = domUtils.createTooltip(
-      'Error: Could not simplify text. Make sure the backend is running.',
-      document.body
-    );
+    
+    // Remove any existing tooltips
+    const existingTooltip = document.querySelector('.aai-tooltip');
+    if (existingTooltip) {
+      existingTooltip.remove();
+    }
+    
+    // Show user-friendly error based on error type
+    const errorMessage = error.name === 'AbortError' 
+      ? 'Request timed out. Please try again.'
+      : 'Error: Could not simplify text. Make sure the backend is running.';
+    
+    const errorTooltip = domUtils.createTooltip(errorMessage, document.body);
     setTimeout(() => errorTooltip.remove(), 5000);
   }
 }
@@ -279,7 +335,9 @@ function createAccessibilityPanel() {
     if (selectedText) {
       handleTextSimplification(selectedText);
     } else {
-      alert('Please select some text first');
+      // Show non-modal notification instead of alert
+      const tooltip = domUtils.createTooltip('Please select some text first', document.body);
+      setTimeout(() => tooltip.remove(), 3000);
     }
   });
   document.getElementById('aai-read-btn').addEventListener('click', () => {
@@ -287,7 +345,9 @@ function createAccessibilityPanel() {
     if (selectedText) {
       handleReadAloud(selectedText);
     } else {
-      alert('Please select some text first');
+      // Show non-modal notification instead of alert
+      const tooltip = domUtils.createTooltip('Please select some text first', document.body);
+      setTimeout(() => tooltip.remove(), 3000);
     }
   });
   document.getElementById('aai-settings-btn').addEventListener('click', () => {

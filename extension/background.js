@@ -7,22 +7,52 @@
 chrome.runtime.onInstalled.addListener((details) => {
   console.log('AAI Extension installed/updated', details);
   
-  // Initialize default settings
-  chrome.storage.sync.set({
-    aaiEnabled: true,
-    fontSize: 16,
-    lineSpacing: 1.5,
-    letterSpacing: 0.0,
-    fontFamily: 'system',
-    colorOverlay: 'none',
-    highContrastMode: false,
-    darkMode: false,
-    simplifyText: false,
-    readingLevel: 'intermediate',
-    speechRate: 1.0,
-    reduceMotion: false,
-    reduceAnimation: false
-  });
+  // Only initialize defaults on first install, not on updates
+  if (details.reason === 'install') {
+    // Initialize default settings only for new installations
+    chrome.storage.sync.set({
+      aaiEnabled: true,
+      fontSize: 16,
+      lineSpacing: 1.5,
+      letterSpacing: 0.0,
+      fontFamily: 'system',
+      colorOverlay: 'none',
+      highContrastMode: false,
+      darkMode: false,
+      simplifyText: false,
+      readingLevel: 'intermediate',
+      speechRate: 1.0,
+      reduceMotion: false,
+      reduceAnimation: false
+    });
+    
+    console.log('AAI: Initialized default settings for new installation');
+  } else if (details.reason === 'update') {
+    // For updates, merge defaults with existing settings (don't overwrite)
+    chrome.storage.sync.get(null, (existingSettings) => {
+      const defaults = {
+        aaiEnabled: true,
+        fontSize: 16,
+        lineSpacing: 1.5,
+        letterSpacing: 0.0,
+        fontFamily: 'system',
+        colorOverlay: 'none',
+        highContrastMode: false,
+        darkMode: false,
+        simplifyText: false,
+        readingLevel: 'intermediate',
+        speechRate: 1.0,
+        reduceMotion: false,
+        reduceAnimation: false
+      };
+      
+      // Merge defaults with existing settings (preserve user preferences)
+      const mergedSettings = { ...defaults, ...existingSettings };
+      chrome.storage.sync.set(mergedSettings);
+      
+      console.log('AAI: Merged settings after update');
+    });
+  }
   
   // Create context menu for text simplification
   createContextMenu();
@@ -138,7 +168,5 @@ chrome.tabs.onActivated.addListener((activeInfo) => {
   });
 });
 
-// Keep service worker alive for faster response times
-setInterval(() => {
-  console.log('AAI Background: Keeping service worker active');
-}, 20000);
+// Note: Service worker will be woken up by events (messages, context menu clicks, etc.)
+// No need for keep-alive intervals - Chrome manages service worker lifecycle automatically

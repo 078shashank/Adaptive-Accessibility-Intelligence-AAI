@@ -71,10 +71,11 @@ The AAI Chrome Extension has been successfully created with all MVP features imp
 - **Status Indicator**: Backend online/offline status
 
 #### 6. Data Persistence
-- Chrome Storage Sync for all settings
-- Cross-device sync capability
+- Chrome Storage Sync for all settings (syncs via Google account if Chrome Sync enabled)
+- Cross-device sync capability through Chrome's built-in sync feature
 - Reset to defaults functionality
 - Real-time setting updates across tabs
+- Note: Chrome Storage Sync may upload data to Google servers if user has Chrome Sync enabled
 
 ---
 
@@ -231,13 +232,13 @@ Test on:
 1. **Full Settings Page** - More comprehensive than popup
 2. **Keyboard Shortcuts** - Quick access to features
 3. **Onboarding Tutorial** - First-install walkthrough
-4. **Analytics** (privacy-respecting) - Usage statistics
+4. **Opt-in Analytics** - Local-only or aggregated analytics with explicit user consent (no default tracking)
 
 ### Long-Term (Future Versions)
 1. **Sign Language Avatar** integration
 2. **Guided Mode Wizard** for ADHD users
 3. **Predictive Typing** suggestions
-4. **Cloud Sync** for settings across devices
+4. **Custom Cloud Sync** - Separate account-based sync with additional capabilities beyond Chrome's built-in sync
 5. **Firefox Extension** version
 6. **Mobile Apps** (iOS/Android)
 
@@ -268,11 +269,13 @@ Test on:
 - Content Security Policy compliant
 
 ### Privacy Commitments
-- All data stored locally in Chrome storage
+- All data stored locally in Chrome storage by default
+- Chrome Storage Sync may sync data to Google servers if user enables Chrome Sync (this is a Chrome browser feature, not extension telemetry)
 - No tracking or analytics by default
 - No third-party cookies
 - Text sent only to user's local backend
 - No data collection or telemetry
+- Analytics (if implemented in future) will be opt-in only with explicit user consent, local-only or aggregated, and fully deletable
 
 ---
 

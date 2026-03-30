@@ -34,8 +34,11 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["content/*", "styles/*", "fonts/*"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "content/content.js",
+        "styles/injected.css"
+      ],
+      "matches": ["https://*/*", "http://*/*"]
     }
   ],
   "icons": {

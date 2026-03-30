@@ -1,6 +1,27 @@
 AAI Chrome Extension - Quick Start Guide
 ==========================================
 
+PREREQUISITES:
+--------------
+
+Before installing, ensure you have the following software:
+
+1. Node.js (version 14.x or higher)
+   - Check version: node -v
+   - Download from: https://nodejs.org/
+
+2. npm (version 6.x or higher)
+   - Check version: npm -v
+   - Comes with Node.js installation
+
+3. Python 3.8+ (for backend server)
+   - Check version: python --version
+   - Download from: https://www.python.org/
+
+4. Git (optional, for version control)
+   - Check version: git --version
+   - Download from: https://git-scm.com/
+
 INSTALLATION STEPS:
 -------------------
 
@@ -19,11 +40,36 @@ INSTALLATION STEPS:
    e. Navigate to and select: extension/dist folder
    f. Extension icon should appear in toolbar
 
-4. Start Backend Server:
+4. Setup Python Virtual Environment (Recommended):
+   
+   Windows PowerShell:
    cd backend
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1
+   
+   Command Prompt (cmd):
+   cd backend
+   python -m venv venv
+   venv\Scripts\activate.bat
+   
+   macOS/Linux:
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate
+
+5. Install Backend Dependencies:
+   # With virtual environment activated
+   pip install -r requirements.txt
+
+6. Start Backend Server:
+   # Make sure you're in backend directory and virtual environment is activated
    uvicorn app.main:app --reload
    
    Backend must be running at http://localhost:8000
+   Verify: http://localhost:8000/health
+   
+   To stop the server later: Press Ctrl+C
+   To deactivate virtual environment when done: deactivate
 
 USAGE:
 ------

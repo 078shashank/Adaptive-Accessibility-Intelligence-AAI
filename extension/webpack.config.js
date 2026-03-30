@@ -5,12 +5,12 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
   entry: {
     // Content script
-    'content/content': './extension/content/content.js',
+    'content/content': './content/content.js',
     // Popup script
-    'popup/popup': './extension/popup/popup.js'
+    'popup/popup': './popup/popup.js'
   },
   output: {
-    path: path.resolve(__dirname, 'extension/dist'),
+    path: path.resolve(__dirname, 'dist'),
     filename: '[name].js',
     clean: true
   },
@@ -63,32 +63,32 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { 
-          from: 'extension/manifest.json', 
+          from: 'manifest.json', 
           to: 'manifest.json' 
         },
         { 
-          from: 'extension/background.js', 
+          from: 'background.js', 
           to: 'background.js' 
         },
         { 
-          from: 'extension/popup/popup.html', 
+          from: 'popup/popup.html', 
           to: 'popup/popup.html' 
         },
         { 
-          from: 'extension/popup/popup.css', 
+          from: 'popup/popup.css', 
           to: 'popup/popup.css' 
         },
         { 
-          from: 'extension/styles/injected.css', 
+          from: 'styles/injected.css', 
           to: 'styles/injected.css' 
         },
         { 
-          from: 'extension/icons', 
+          from: 'icons', 
           to: 'icons',
           noErrorOnMissing: true
         },
         { 
-          from: 'extension/fonts', 
+          from: 'fonts', 
           to: 'fonts',
           noErrorOnMissing: true
         }
