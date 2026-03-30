@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AAI - Accessibility Tools</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <header class="popup-header">
+      <h1>AAI Tools</h1>
+      <span id="backend-status" class="status-indicator" title="Backend status"></span>
+    </header>
+    
+    <main class="popup-content">
+      <!-- Quick Settings Section -->
+      <section class="settings-section">
+        <h2>Quick Settings</h2>
+        
+        <!-- Font Size -->
+        <div class="control-group">
+          <label for="font-size">Font Size: <span id="font-size-value">16</span>px</label>
+          <input 
+            type="range" 
+            id="font-size" 
+            min="12" 
+            max="32" 
+            value="16"
+            aria-label="Adjust font size"
+          />
+        </div>
+        
+        <!-- Line Spacing -->
+        <div class="control-group">
+          <label for="line-spacing">Line Spacing: <span id="line-spacing-value">1.5</span>x</label>
+          <input 
+            type="range" 
+            id="line-spacing" 
+            min="1.0" 
+            max="3.0" 
+            step="0.1"
+            value="1.5"
+            aria-label="Adjust line spacing"
+          />
+        </div>
+        
+        <!-- Letter Spacing -->
+        <div class="control-group">
+          <label for="letter-spacing">Letter Spacing: <span id="letter-spacing-value">0.0</span>px</label>
+          <input 
+            type="range" 
+            id="letter-spacing" 
+            min="0.0" 
+            max="2.0" 
+            step="0.1"
+            value="0.0"
+            aria-label="Adjust letter spacing"
+          />
+        </div>
+        
+        <!-- Font Family -->
+        <div class="control-group">
+          <label for="font-family">Font Family</label>
+          <select id="font-family" aria-label="Select font family">
+            <option value="system">System Default</option>
+            <option value="OpenDyslexic">OpenDyslexic</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Verdana">Verdana</option>
+            <option value="Trebuchet">Trebuchet MS</option>
+          </select>
+        </div>
+        
+        <!-- Color Overlay -->
+        <div class="control-group">
+          <label for="color-overlay">Color Overlay</label>
+          <select id="color-overlay" aria-label="Select color overlay">
+            <option value="none">None</option>
+            <option value="blue">Light Blue</option>
+            <option value="green">Green</option>
+            <option value="yellow">Yellow</option>
+            <option value="sepia">Sepia</option>
+          </select>
+        </div>
+      </section>
+      
+      <!-- Toggle Controls -->
+      <section class="toggle-section">
+        <h2>Display Modes</h2>
+        
+        <div class="toggle-control">
+          <label for="high-contrast">High Contrast Mode</label>
+          <input type="checkbox" id="high-contrast" aria-label="Toggle high contrast mode" />
+        </div>
+        
+        <div class="toggle-control">
+          <label for="dark-mode">Dark Mode</label>
+          <input type="checkbox" id="dark-mode" aria-label="Toggle dark mode" />
+        </div>
+        
+        <div class="toggle-control">
+          <label for="reduce-motion">Reduce Motion</label>
+          <input type="checkbox" id="reduce-motion" aria-label="Toggle reduced motion" />
+        </div>
+      </section>
+      
+      <!-- Text Simplification -->
+      <section class="simplify-section">
+        <h2>Text Simplification</h2>
+        
+        <div class="control-group">
+          <label for="simplify-text">Enable Auto-Simplify</label>
+          <input type="checkbox" id="simplify-text" aria-label="Enable text simplification" />
+        </div>
+        
+        <div class="control-group">
+          <label for="reading-level">Reading Level</label>
+          <select id="reading-level" aria-label="Select reading level">
+            <option value="basic">Basic</option>
+            <option value="intermediate" selected>Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+      </section>
+      
+      <!-- Action Buttons -->
+      <section class="actions-section">
+        <button id="reset-btn" class="action-btn secondary">Reset All</button>
+        <button id="help-btn" class="action-btn secondary">Help</button>
+      </section>
+    </main>
+    
+    <footer class="popup-footer">
+      <small>AAI v1.0.0 | <a href="#" id="open-full-settings">Full Settings</a></small>
+    </footer>
+  </div>
+  
+  <script src="popup.js" type="module"></script>
+</body>
+</html>

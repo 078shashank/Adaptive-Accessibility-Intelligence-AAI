@@ -1,0 +1,13 @@
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="64" cy="64" r="64" fill="#667eea"/>
+  
+  <!-- Letter A (representing Accessibility) -->
+  <path d="M64 20L48 92H58L64 64L70 92H80L64 20Z" fill="white"/>
+  
+  <!-- Open Book Symbol (representing Reading) -->
+  <path d="M36 76C36 76 44 84 64 84C84 84 92 76 92 76V100C92 100 84 92 64 92C44 92 36 100 36 100V76Z" fill="white" opacity="0.9"/>
+  
+  <!-- Sparkle (representing AI/Enhancement) -->
+  <path d="M96 28L98 34L104 36L98 38L96 44L94 38L88 36L94 34L96 28Z" fill="#FFD700"/>
+</svg>
