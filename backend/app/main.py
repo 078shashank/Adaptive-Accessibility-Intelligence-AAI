@@ -41,12 +41,55 @@ app.add_middleware(
     allowed_hosts=["127.0.0.1", "localhost", "127.0.0.1:3000", "127.0.0.1:8000", "testserver"]
 )
 
-# Add CORS middleware
+# Custom CORS origin validator
+def validate_cors_origin(origin: str) -> bool:
+    """
+    Validate CORS origins including Chrome/Firefox extensions.
+    Allows specific origins and validates extension IDs.
+    """
+    # Check against allowed origins list
+    if origin in settings.CORS_ORIGINS:
+        return True
+    
+    # Check for Chrome extension origins
+    if origin and origin.startswith("chrome-extension://"):
+        extension_id = origin.replace("chrome-extension://", "")
+        if settings.ALLOWED_EXTENSION_IDS:
+            return extension_id in settings.ALLOWED_EXTENSION_IDS
+        # Allow all during development (populate ALLOWED_EXTENSION_IDS for production)
+        return True
+    
+    # Check for Firefox extension origins  
+    if origin and origin.startswith("moz-extension://"):
+        extension_id = origin.replace("moz-extension://", "")
+        if settings.ALLOWED_EXTENSION_IDS:
+            return extension_id in settings.ALLOWED_EXTENSION_IDS
+        return True
+    
+    return False
+
+# Add CORS middleware with dynamic origin validation
+@app.middleware("http")
+async def cors_middleware(request, call_next):
+    """Custom CORS middleware with extension support"""
+    origin = request.headers.get("origin")
+    
+    response = await call_next(request)
+    
+    if origin and validate_cors_origin(origin):
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
+
+# Standard CORS middleware for preflight requests
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=settings.CORS_ORIGINS,  # Only specific origins for preflight
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 

@@ -18,13 +18,18 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
-    # CORS
+    # CORS - Specific origins only (no wildcards)
     CORS_ORIGINS: List[str] = [
         "http://localhost:3000",
         "http://localhost:8000",
         "http://127.0.0.1:3000",
         "http://127.0.0.1:8000"
     ]
+    
+    # Chrome Extension IDs (to be replaced with actual extension IDs after loading)
+    # Format: chrome-extension://<extension-id>
+    # Get extension ID from chrome://extensions/ > Developer mode
+    ALLOWED_EXTENSION_IDS: List[str] = []  # Add actual extension IDs here when known
     
     # AI Models
     HF_MODEL_NAME: str = "facebook/bart-large-cnn"

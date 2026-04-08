@@ -1,0 +1,149 @@
+AAI Chrome Extension - Quick Start Guide
+==========================================
+
+PREREQUISITES:
+--------------
+
+Before installing, ensure you have the following software:
+
+1. Node.js (version 14.x or higher)
+   - Check version: node -v
+   - Download from: https://nodejs.org/
+
+2. npm (version 6.x or higher)
+   - Check version: npm -v
+   - Comes with Node.js installation
+
+3. Python 3.8+ (for backend server)
+   - Check version: python --version
+   - Download from: https://www.python.org/
+
+4. Git (optional, for version control)
+   - Check version: git --version
+   - Download from: https://git-scm.com/
+
+INSTALLATION STEPS:
+-------------------
+
+1. Install Dependencies:
+   cd extension
+   npm install
+
+2. Build the Extension:
+   npm run build
+
+3. Load in Chrome:
+   a. Open Chrome browser
+   b. Go to: chrome://extensions/
+   c. Enable "Developer mode" (top right toggle)
+   d. Click "Load unpacked"
+   e. Navigate to and select: extension/dist folder
+   f. Extension icon should appear in toolbar
+
+4. Setup Python Virtual Environment (Recommended):
+   
+   Windows PowerShell:
+   cd backend
+   python -m venv venv
+   .\venv\Scripts\Activate.ps1
+   
+   Command Prompt (cmd):
+   cd backend
+   python -m venv venv
+   venv\Scripts\activate.bat
+   
+   macOS/Linux:
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate
+
+5. Install Backend Dependencies:
+   # With virtual environment activated
+   pip install -r requirements.txt
+
+6. Start Backend Server:
+   # Make sure you're in backend directory and virtual environment is activated
+   uvicorn app.main:app --reload
+   
+   Backend must be running at http://localhost:8000
+   Verify: http://localhost:8000/health
+   
+   To stop the server later: Press Ctrl+C
+   To deactivate virtual environment when done: deactivate
+
+USAGE:
+------
+
+Popup Settings:
+- Click extension icon in toolbar
+- Adjust font size, spacing, colors
+- Toggle display modes
+- Enable text simplification
+
+Context Menu:
+- Select any text on webpage
+- Right-click
+- Choose "Simplify with AAI" or "Read Aloud"
+
+Floating Panel:
+- Appears automatically on pages
+- Quick access to simplify and read aloud
+- Drag to reposition
+
+TROUBLESHOOTING:
+---------------
+
+Extension Not Working?
+- Check if backend is running: http://localhost:8000/health
+- Reload extension from chrome://extensions/
+- Refresh the webpage
+- Check browser console for errors
+
+Backend Not Connecting?
+- Ensure FastAPI server is running on port 8000
+- Check firewall settings
+- Verify CORS allows extension origins
+
+NEXT STEPS:
+----------
+
+1. Create Icon Images:
+   - Create 48x48px and 128x128px PNG icons
+   - Place in extension/icons/ folder
+   - Or use the provided SVG templates
+
+2. Test on Multiple Websites:
+   - News sites (CNN, BBC)
+   - Documentation (MDN, W3C)
+   - E-commerce (Amazon)
+   - Social media
+
+3. Customize Backend URL:
+   - Update extension/services/api.js if needed
+   - Change from localhost to production URL
+
+4. Package for Distribution:
+   npm run package
+   
+5. Submit to Chrome Web Store:
+   - Prepare promotional images (440x280px)
+   - Write detailed description
+   - Create privacy policy
+   - Take screenshots
+
+DEVELOPMENT TIPS:
+----------------
+
+Debug Popup:
+- Right-click extension icon → Inspect popup
+
+Debug Background:
+- chrome://extensions/ → Details → Service Worker → Inspect
+
+Debug Content Script:
+- Open DevTools on any page → Console tab
+
+Hot Reload:
+npm run build:dev
+
+For more information, see README.md

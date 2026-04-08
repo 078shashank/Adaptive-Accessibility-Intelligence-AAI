@@ -1,0 +1,204 @@
+/**
+ * Injected Styles for AAI Extension
+ * Applied to web pages when extension is active
+ */
+
+/* AAI High Contrast Mode */
+.aai-high-contrast {
+  filter: contrast(1.2) !important;
+}
+
+.aai-high-contrast * {
+  border-color: #000 !important;
+}
+
+.aai-high-contrast a,
+.aai-high-contrast button {
+  text-decoration: underline !important;
+}
+
+/* AAI Dark Mode */
+.aai-dark-mode {
+  background-color: #1a1a1a !important;
+  color: #e5e5e5 !important;
+}
+
+.aai-dark-mode * {
+  background-color: rgba(26, 26, 26, 0.9) !important;
+  color: #e5e5e5 !important;
+  border-color: #444 !important;
+}
+
+.aai-dark-mode img,
+.aai-dark-mode video {
+  opacity: 0.8 !important;
+}
+
+/* AAI Reduce Motion */
+.aai-reduce-motion *,
+.aai-reduce-motion *::before,
+.aai-reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Accessibility Panel Styles */
+#aai-accessibility-panel {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.aai-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background-color: #667eea;
+  color: white;
+  font-weight: 600;
+  cursor: move;
+  user-select: none;
+}
+
+#aai-panel-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+
+#aai-panel-close:hover {
+  opacity: 0.8;
+}
+
+.aai-panel-content {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.aai-panel-btn {
+  padding: 8px 16px;
+  background-color: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.aai-panel-btn:hover {
+  background-color: #e5e7eb;
+  border-color: #9ca3af;
+}
+
+.aai-panel-btn:active {
+  background-color: #d1d5db;
+}
+
+/* Tooltip Styles */
+.aai-tooltip {
+  position: absolute;
+  z-index: 1000000;
+  padding: 8px 12px;
+  background-color: #333;
+  color: #fff;
+  border-radius: 4px;
+  font-size: 14px;
+  max-width: 300px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+/* Color Overlay Removal */
+#aai-color-overlay {
+  pointer-events: none;
+}
+
+/* Font Families */
+@font-face {
+  font-family: 'OpenDyslexic';
+  src: url('chrome-extension://__MSG_@@extension_id__/fonts/OpenDyslexic-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Reading Level Highlighting (for future enhancement) */
+.aai-simplified-text {
+  background-color: rgba(255, 255, 0, 0.1);
+  border-bottom: 2px solid #ffd700;
+}
+
+/* Focus Indicators for Better Accessibility */
+.aai-high-contrast :focus,
+.aai-high-contrast *:focus-visible {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 2px !important;
+}
+
+:focus:not(:focus-visible) {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+:focus-visible {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Skip Links (for keyboard navigation) */
+.aai-skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: white;
+  padding: 8px;
+  z-index: 100;
+  text-decoration: none;
+}
+
+.aai-skip-link:focus {
+  top: 0;
+}
+
+/* Text Spacing Overrides */
+.aai-increased-line-height p,
+.aai-increased-line-height li,
+.aai-increased-line-height h1,
+.aai-increased-line-height h2,
+.aai-increased-line-height h3,
+.aai-increased-line-height h4,
+.aai-increased-line-height h5,
+.aai-increased-line-height h6 {
+  line-height: 1.8 !important;
+}
+
+.aai-increased-letter-spacing {
+  letter-spacing: 0.05em !important;
+  word-spacing: 0.1em !important;
+}
+
+/* Print Styles - Don't apply AAI modifications when printing */
+@media print {
+  #aai-accessibility-panel,
+  .aai-tooltip,
+  #aai-color-overlay {
+    display: none !important;
+  }
+  
+  body {
+    filter: none !important;
+  }
+}
